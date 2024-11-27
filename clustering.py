@@ -18,6 +18,13 @@ def apply_clustering(data, target_column="Diabetes_012"):
     
     # KMeans Clustering
     kmeans_labels = None
+    for k in RANGE:
+        kmeans = KMeans(n_clusters=k, random_state=42)
+        kmeans_labels = kmeans.fit_predict(X)
+        score = silhouette_score(X, kmeans_labels)
+        kmeans_scores.append(score)
+    best_kmeans_score = np.max(kmeans_scores)
+    print(f"Best Silhouette Score for KMeans: {best_kmeans_score:.4f}")
 
     # DBSCAN Clustering
     dbscan_labels = None
