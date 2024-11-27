@@ -114,7 +114,7 @@ def main(args):
     selected_data = select_features(data_resampled)
 
     print("Applying clustering...")
-    #apply_clustering(selected_data, target_column="Diabetes_012")
+    apply_clustering(selected_data, target_column="Diabetes_012")
 
     run_classifiers(selected_data, target_column="Diabetes_012")
     
