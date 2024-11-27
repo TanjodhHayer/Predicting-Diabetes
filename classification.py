@@ -41,12 +41,13 @@ def run_classifiers(data, target_column="Diabetes_012"):
     best_rf = randomized_search.best_estimator_
     print("Best Hyperparameters for Random Forest:", randomized_search.best_params_)
 
-    # Models to evaluate
+    # Models
     models = {
-        "Random Forest (Tuned)": best_rf,
-        "KNN": KNeighborsClassifier(n_neighbors=1),
-        "SVM": SVC(kernel='rbf', probability=True, random_state=42)
+        "Random Forest (Tuned)": best_rf,  # Tuned RF
+        "KNN": KNeighborsClassifier(),     
+        "SVM": SVC(kernel='rbf', probability=True, random_state=42)       
     }
+
     
     # Cross-validation setup (5-fold)
     cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
