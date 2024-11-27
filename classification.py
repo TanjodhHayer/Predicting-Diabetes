@@ -43,6 +43,7 @@ def run_classifiers(data, target_column="Diabetes_012"):
     
     models = {
         "Random Forest (Tuned)": best_rf,
+        "KNN": KNeighborsClassifier(n_neighbors=1),
         "SVM": SVC(kernel='rbf', probability=True, random_state=42)
     }
     
