@@ -5,7 +5,7 @@ from sklearn.feature_selection import mutual_info_classif, RFE
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 
-def select_features(data, threshold=0.7, top_percentage=0.15):
+def select_features(data, threshold=0.7, top_percentage=0.3):
     X = data.drop("Diabetes_012", axis=1)
     y = data["Diabetes_012"]
 
@@ -14,7 +14,7 @@ def select_features(data, threshold=0.7, top_percentage=0.15):
     mi_scores = pd.Series(mi, index=X.columns).sort_values(ascending=False)
     
     # Dynamically choose top features
-    top_n_features = max(2, int(len(X.columns) * top_percentage))
+    top_n_features = max(4, int(len(X.columns) * top_percentage))
     print(f"Top {top_n_features} features by Mutual Information:")
     print(mi_scores.head(top_n_features))
     

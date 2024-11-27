@@ -141,38 +141,76 @@ def run_rf_with_cv(data, target_column="Diabetes_012"):
     # Split the dataset into features (X) and target (y)
     X = data.drop(columns=[target_column])
     y = data[target_column]
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y, random_state=42)
     
     # Initialize the Random Forest Classifier with default hyperparameters
     rf = RandomForestClassifier(random_state=42)
     
-    # Perform 5-fold cross-validation
-    print("Performing 5-fold cross-validation for Random Forest...")
-    cv_scores = cross_val_score(rf, X, y, cv=5, scoring='f1_macro')  # You can change scoring as needed
+    # Perform 5-fold cross-validation on the training set
+    print("Performing 5-fold cross-validation for Random Forest Default")
+    cv_scores = cross_val_score(rf, X_train, y_train, cv=5, scoring='f1_macro')  # Use training set only
+    print(f"Mean F1-score from 5-fold CV: {np.mean(cv_scores):.4f}")
     
-    print(f"Cross-validation scores: {cv_scores}")
-    print(f"Mean accuracy from 5-fold CV: {np.mean(cv_scores):.4f}")
+    # Train on the full training set and evaluate on the test set
+    rf.fit(X_train, y_train)
+    y_pred = rf.predict(X_test)
+    y_proba = rf.predict_proba(X_test)
     
-    # Train the model on the full dataset
-    rf.fit(X, y)
+    # Evaluate model performance on the test set
+    accuracy = accuracy_score(y_test, y_pred)
+    precision = precision_score(y_test, y_pred, average='macro')
+    recall = recall_score(y_test, y_pred, average='macro')
+    f1 = f1_score(y_test, y_pred, average='macro')
+    auc = roc_auc_score(y_test, y_proba, multi_class='ovr') if y_proba is not None else None
     
-    # Make predictions on the same data (for demonstration, though this is typically not done in real evaluation)
-    y_pred = rf.predict(X)
-    y_proba = rf.predict_proba(X) if hasattr(rf, "predict_proba") else None
-    
-    # Evaluate model performance on the entire dataset
-    accuracy = accuracy_score(y, y_pred)
-    precision = precision_score(y, y_pred, average='macro')
-    recall = recall_score(y, y_pred, average='macro')
-    f1 = f1_score(y, y_pred, average='macro')
-    auc = roc_auc_score(y, y_proba, multi_class='ovr') if y_proba is not None else None
-    
-    print(f"Random Forest Accuracy: {accuracy:.4f}")
-    print(f"Random Forest Precision: {precision:.4f}")
-    print(f"Random Forest Recall: {recall:.4f}")
-    print(f"Random Forest F1-score: {f1:.4f}")
+    print(f"Accuracy: {accuracy:.4f}")
+    print(f"Precision: {precision:.4f}")
+    print(f"Recall: {recall:.4f}")
+    print(f"F1-score: {f1:.4f}")
     if auc is not None:
-        print(f"Random Forest AUC-ROC: {auc:.4f}")
+        print(f"AUC-ROC: {auc:.4f}")
     
-    # Plot confusion matrix and ROC curve
-    plot_confusion_matrices([y], [y_pred], ["Random Forest"])
-    plot_combined_roc_curves([y], [y_proba], ["Random Forest"])
+    # Plot confusion matrix and ROC curve (on the test set)
+    plot_confusion_matrix_single(y_test, y_pred, "Random Forest")
+    plot_roc_curve_single(y_test, y_proba, "Random Forest")
+
+
+
+def plot_confusion_matrix_single(y_true, y_pred, model_name):
+    """
+    Plots a single confusion matrix for a given model's predictions.
+    """
+    cm = confusion_matrix(y_true, y_pred)
+    plt.figure(figsize=(6, 6))
+    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=np.unique(y_true), yticklabels=np.unique(y_true))
+    plt.title(f"{model_name} Confusion Matrix")
+    plt.xlabel("Predicted Labels")
+    plt.ylabel("True Labels")
+    plt.tight_layout()
+    plt.savefig(f"{model_name.replace(' ', '_')}_Confusion_Matrix.png")
+    plt.close()
+
+def plot_roc_curve_single(y_true, y_proba, model_name):
+    """
+    Plots a single ROC curve for a given model's predictions.
+    """
+    if y_proba.ndim == 1:  # Binary classification
+        fpr, tpr, _ = roc_curve(y_true, y_proba)
+        auc = roc_auc_score(y_true, y_proba)
+        plt.figure(figsize=(8, 6))
+        plt.plot(fpr, tpr, label=f"AUC = {auc:.4f}")
+    else:  # Multi-class classification
+        plt.figure(figsize=(8, 6))
+        for i_class in range(y_proba.shape[1]):
+            fpr, tpr, _ = roc_curve(y_true == i_class, y_proba[:, i_class])
+            auc = roc_auc_score(y_true == i_class, y_proba[:, i_class])
+            plt.plot(fpr, tpr, label=f"Class {i_class} AUC = {auc:.4f}")
+    
+    plt.plot([0, 1], [0, 1], linestyle="--", color="gray", label="Random Guess")
+    plt.title(f"{model_name} ROC Curve")
+    plt.xlabel("False Positive Rate")
+    plt.ylabel("True Positive Rate")
+    plt.legend(loc="lower right")
+    plt.tight_layout()
+    plt.savefig(f"{model_name.replace(' ', '_')}_ROC_Curve.png")
+    plt.close()

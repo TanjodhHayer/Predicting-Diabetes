@@ -103,19 +103,20 @@ def main(args):
     print("EDA...")
     perform_eda(data_resampled)
 
-    print("Performing Outlier Detection with LOF and Isolation Forest")
+    print("Performing Outlier Detectiont")
     numerical_columns = ['BMI', 'GenHlth', 'MentHlth', 'PhysHlth', 'Age', 'Education', 'Income']
     lof_outliers, iso_outliers, ee_outliers = run_outlier_detection(data_resampled, numerical_columns)
 
-    print("Cleaning dataset by removing outliers detected by both methods...")
+    print("Cleaning dataset by removing outliers detected")
     data_resampled = clean_data_with_outliers(data_resampled, lof_outliers, iso_outliers, ee_outliers)
 
-    print("Performing feature selection on cleaned dataset...")
+    print("Performing feature selection on cleaned dataset")
     selected_data = select_features(data_resampled)
 
-    print("Applying clustering...")
+    print("Applying clustering")
     apply_clustering(selected_data, target_column="Diabetes_012")
 
+    print("Running classification")
     run_classifiers(selected_data, target_column="Diabetes_012")
     
     # Call this function to run a default Random Forest
