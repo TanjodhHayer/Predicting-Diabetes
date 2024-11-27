@@ -31,7 +31,7 @@ def apply_clustering(data, target_column="Diabetes_012"):
     eps_range = np.linspace(0.5, 5, 25)
     
     for eps in eps_range:
-        dbscan = DBSCAN(eps=eps, min_samples=7)
+        dbscan = DBSCAN(eps=eps, min_samples=9)
         dbscan_labels = dbscan.fit_predict(X)
         
         if len(set(dbscan_labels)) > 1:
@@ -39,8 +39,6 @@ def apply_clustering(data, target_column="Diabetes_012"):
             dbscan_scores.append(score)
         else:
             dbscan_scores.append(-1)
-            
-    optimal_eps = eps_range[np.argmax(dbscan_scores)] # NOT USED? i dont think we need this
     best_dbscan_score = np.max(dbscan_scores)
     print(f"Best Silhouette Score for DBSCAN: {best_dbscan_score:.4f}")
     

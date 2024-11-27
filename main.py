@@ -78,7 +78,7 @@ def preprocess_data(data, filepath):
 
     class_distribution_resampled = data_resampled['Diabetes_012'].value_counts()
     class_distribution_resampled.plot(kind='bar')
-    plt.title("Class Distribution After Stratified Subsampling")
+    plt.title("Class Distribution After SMOTE & Stratified Subsampling")
     plt.xlabel("Diabetes Status (0: No Diabetes, 1: Diagnosed, 2: Prediabetic)")
     plt.ylabel("Number of Samples")
     plt.xticks(ticks=[0, 1, 2], labels=["No Diabetes", "Diagnosed", "Prediabetic"], rotation=0)
