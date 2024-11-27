@@ -93,8 +93,25 @@ def run_classifiers(data, target_column="Diabetes_012"):
             print(f"{model_name} AUC-ROC: {auc:.4f}")
             
         y_true_list = [y_test] * len(models)
+        
+        plot_confusion_matrices(y_true_list, predictions, model_names)
         plot_combined_roc_curves(y_true_list, probabilities, model_names)
     
+def plot_confusion_matrices(y_true_list, predictions, model_names):
+    n_models = len(model_names) # Number of models
+    _, confusion_plot = plt.subplots(1, n_models, figsize=(6 * n_models, 6)) # 1 row, n_models columns 
+    
+    for i, (y_true, pred, model_name) in enumerate(zip(y_true_list, predictions, model_names)):
+        confusion_mtrx = confusion_matrix(y_true, pred)
+        
+        sns.heatmap(confusion_mtrx, annot=True, fmt='d', cmap='Blues', xticklabels=np.unique(y_true), yticklabels=np.unique(y_true), ax=confusion_plot[i])
+        
+        confusion_plot[i].set_title(f"{model_name} Confusion Matrix")
+        confusion_plot[i].set_ylabel("True Labels")
+        confusion_plot[i].set_xlabel("Predicted Labels")
+        
+    plt.tight_layout()
+    plt.savefig("Confusion_Matrices.png")
 
 def plot_combined_roc_curves(y_true_list, probabilities, model_names):
     n_models = len(model_names)  # Number of models
