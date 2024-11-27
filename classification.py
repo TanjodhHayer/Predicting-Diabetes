@@ -41,8 +41,11 @@ def run_classifiers(data, target_column="Diabetes_012"):
     best_rf = randomized_search.best_estimator_
     print("Best Hyperparameters for Random Forest:", randomized_search.best_params_)
     
-
-
+    models = {
+        "Random Forest (Tuned)": best_rf,
+        "SVM": SVC(kernel='rbf', probability=True, random_state=42)
+    }
+    
 
 def plot_combined_roc_curves(y_true_list, y_proba_list, model_names):
     n_models = len(model_names)  # Number of models
