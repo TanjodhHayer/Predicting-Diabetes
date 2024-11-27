@@ -7,7 +7,7 @@ from eda import perform_eda
 from outlier_detection import run_outlier_detection
 from clustering import apply_clustering
 from feature_selection import select_features
-from classification import run_classifiers
+from classification import run_classifiers, run_rf_with_cv
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.impute import SimpleImputer
 from imblearn.over_sampling import SMOTE
@@ -119,7 +119,7 @@ def main(args):
     run_classifiers(selected_data, target_column="Diabetes_012")
     
     # Call this function to run a default Random Forest
-    #run_rf_default(selected_data, target_column="Diabetes_012")
+    run_rf_with_cv(selected_data, target_column="Diabetes_012")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Data Mining Project")
