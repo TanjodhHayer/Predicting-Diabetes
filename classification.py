@@ -66,10 +66,8 @@ def run_classifiers(data, target_column="Diabetes_012"):
         model.fit(X_train, y_train)
         
         prediction = model.predict(X_test)
-        probability = None
-        if hasattr(model, "predict_proba"):
-            probability = model.predict_proba(X_test)
-       
+        probability = model.predict_proba(X_test) if hasattr(model, "predict_proba") else None
+
         # Collect predictions and probabilities
         predictions.append(prediction)
         probabilities.append(probability)
@@ -80,10 +78,7 @@ def run_classifiers(data, target_column="Diabetes_012"):
         precision = precision_score(y_test, prediction, average='macro')
         recall = recall_score(y_test, prediction, average='macro')
         f1 = f1_score(y_test, prediction, average='macro')
-        auc = None
-        
-        if probability:
-            auc = roc_auc_score(y_test, probability, multi_class='ovr')
+        auc = roc_auc_score(y_test, probability, multi_class='ovr') if probability is not None else None        
         
         print(f"{model_name} Accuracy: {accuracy:.4f}")
         print(f"{model_name} Precision: {precision:.4f}")
@@ -97,18 +92,16 @@ def run_classifiers(data, target_column="Diabetes_012"):
         plot_confusion_matrices(y_true_list, predictions, model_names)
         plot_combined_roc_curves(y_true_list, probabilities, model_names)
     
-def plot_confusion_matrices(y_true_list, predictions, model_names):
-    n_models = len(model_names) # Number of models
-    _, confusion_plot = plt.subplots(1, n_models, figsize=(6 * n_models, 6)) # 1 row, n_models columns 
-    
-    for i, (y_true, pred, model_name) in enumerate(zip(y_true_list, predictions, model_names)):
-        confusion_mtrx = confusion_matrix(y_true, pred)
-        
-        sns.heatmap(confusion_mtrx, annot=True, fmt='d', cmap='Blues', xticklabels=np.unique(y_true), yticklabels=np.unique(y_true), ax=confusion_plot[i])
-        
-        confusion_plot[i].set_title(f"{model_name} Confusion Matrix")
-        confusion_plot[i].set_ylabel("True Labels")
-        confusion_plot[i].set_xlabel("Predicted Labels")
+def plot_confusion_matrices(y_true_list, y_pred_list, model_names):
+    # Create a figure for all confusion matrices
+    n_models = len(model_names)
+    fig, axes = plt.subplots(1, n_models, figsize=(6 * n_models, 6))  # 1 row, n_models columns
+    for i, (y_true, y_pred, model_name) in enumerate(zip(y_true_list, y_pred_list, model_names)):
+        cm = confusion_matrix(y_true, y_pred)
+        sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=np.unique(y_true), yticklabels=np.unique(y_true), ax=axes[i])
+        axes[i].set_title(f"{model_name} Confusion Matrix")
+        axes[i].set_xlabel("Predicted Labels")
+        axes[i].set_ylabel("True Labels")
         
     plt.tight_layout()
     plt.savefig("Confusion_Matrices.png")
