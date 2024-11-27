@@ -10,9 +10,10 @@ def detect_outliers_lof(data, numerical_columns, n_neighbors=20, contamination=0
     lof_flags = lof.fit_predict(data[numerical_columns])
     return lof_flags == -1  
 
-
-
-
+def detect_outliers_isoforest(data, numerical_columns, contamination=0.01, random_state=42):
+    iso_forest = IsolationForest(contamination=contamination, random_state=random_state)
+    iso_forest_flags = iso_forest.fit_predict(data[numerical_columns])
+    return iso_forest_flags == -1
 
 def plot_outliers(data, outliers, numerical_columns, method_name="Outlier Detection"):
     """
