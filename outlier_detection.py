@@ -15,6 +15,11 @@ def detect_outliers_isoforest(data, numerical_columns, contamination=0.01, rando
     iso_forest_flags = iso_forest.fit_predict(data[numerical_columns])
     return iso_forest_flags == -1
 
+def detect_outliers_elliptic(data, numerical_columns, contamination=0.01, random_state=42):
+    elliptic = EllipticEnvelope(contamination=contamination, random_state=random_state)
+    elliptic_flags = elliptic.fit_predict(data[numerical_columns])
+    return elliptic_flags == -1
+
 def plot_outliers(data, outliers, numerical_columns, method_name="Outlier Detection"):
     """
     Generalized plot function for visualizing outliers detected by different methods.
