@@ -74,6 +74,7 @@ def apply_clustering(data, target_column="Diabetes_012"):
     top_score = np.max(hierarchical_scores)
     print(f"Best Silhouette Score for Hierarchical Clustering: {top_score:.4f}")
 
+    # Now just plot them
     plot_combined_silhouette_scores(kmeans_scores, dbscan_scores, hierarchical_scores, eps_range)
     plot_clustering_results(X, kmeans_labels, dbscan_labels, hierarchical_labels)
 
