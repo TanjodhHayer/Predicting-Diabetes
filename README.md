@@ -66,9 +66,9 @@ This conversion was performed to maintain consistency and prevent errors during 
 
 To handle missing data, we imputed missing values in the features using the mean of each column. This approach preserves dataset completeness while providing reasonable estimates for missing entries.
 
-Feature standardization was also applied, ensuring all features had a mean of 0 and a standard deviation of 1. This step is particularly important for algorithms like K-Means and Support Vector Machines (SVM), which are sensitive to feature scaling. Standardization improved model convergence and overall performance.
+Feature standardization was also applied, ensuring all features had a mean of 0 and a standard deviation of 1. This step is pretty important for algorithms like K-Means and Support Vector Machines (SVM), which are sensitive to feature scaling. 
 
-Our initial dataset contained over 200,000 samples, but there was a significant class imbalance. To address this, we applied SMOTE (Synthetic Minority Oversampling Technique) to balance the class distribution by generating synthetic samples for the minority classes. Without balancing, the models could become biased toward the majority class. However, applying SMOTE increased the dataset size to over 600,000 samples, which was computationally prohibitive. To resolve this, we reduced the dataset to 20,000 samples using stratified subsampling. This method preserved the class proportions, ensuring an equal class distribution while making the dataset manageable for machine learning tasks. By subsampling, we retained the dataset's integrity while enabling efficient model training, classification, and clustering.
+Our initial dataset contained over 200,000 samples, but there was a significant imbalance for the classes. To address this, we applied SMOTE (Synthetic Minority Oversampling Technique) to balance the class distribution by generating synthetic samples for the minority classes. This allowed the models to become biased towards the majority class. However, applying SMOTE increased the dataset size to over 600,000 samples, which is quite big and slowed down a lot of our processes. To solve this, we reduced the dataset to 20,000 samples by just subsampling the original. This method preserved the class proportions, ensuring an equal class distribution while making the dataset manageable for machine learning tasks (especially for us). 
 
 To verify the effectiveness of our preprocessing, we visualized the class distributions before and after SMOTE and subsampling. These plots provide clear evidence of the process and outcomes.
 
@@ -76,6 +76,8 @@ Finally, to save time during subsequent runs, the processed dataset was saved as
 
     If the file exists, the code skips preprocessing and directly loads the cleaned, balanced, and scaled dataset.
     If the file does not exist, the preprocessing pipeline runs on the original dataset to regenerate and save the processed version.
+
+ Note: we do have some warnings that come up during the running process that can be ignored as it does not impact or hinder the work being done. 
 
 ### Class Distribution Before SMOTE
 ![Class Distribution Before SMOTE](/Diabetes_Class_Distribution_Before_SMOTE.png "Class Distribution Before SMOTE")
@@ -85,9 +87,13 @@ Finally, to save time during subsequent runs, the processed dataset was saved as
 
 ### Exploratory Data Analysis (EDA)
 
-Exploratory Data Analysis (EDA) is an essential step in understanding the underlying patterns and relationships within a dataset. It helps to detect anomalies, check assumptions, and provide insights into the structure of the data. In this analysis, we performed EDA by calculating summary statistics, visualizing key features, and analyzing the correlations between them.
+Exploratory Data Analysis (EDA) is an essential step in understanding the underlying patterns and relationships within a dataset. It helps to detect anomalies, check any assumptions, and give us details in a structure of within the data. In this analysis, we performed EDA by calculating summary statistics, visualizing key features, and analyzing the correlations between them.
 
-Summary Statistics: We began by generating a summary of the dataset using the describe() function. This provides basic statistical metrics, such as the mean, standard deviation, minimum, maximum, and percentiles for all numerical features, helping to understand the distribution and range of values in the dataset.
+Summary Statistics: We began by generating a summary of the dataset using the describe() function.
+```python
+summary_stats = data.describe().transpose()
+```
+This provides basic statistical metrics, such as the mean, standard deviation, minimum, maximum, and percentiles for all numerical features, helping to understand the distribution and range of values in the dataset.
 ![Summary Statistics](eda_plots/eda_summary_statistics.png)
 
 Visualizing Distributions: Histograms were used to visualize the distributions of key features. This step helps identify the shape of the distributions (e.g., normal, skewed) and potential transformations needed to improve model performance or meet statistical assumptions.
@@ -97,15 +103,25 @@ Correlation Analysis: We calculated the correlation matrix to examine relationsh
 ![Correlation Heatmap](eda_plots/Correlation_Heatmap.png)
 
 ### Outlier Detection
-Outlier detection is being done using three algorithms to identify exreme or anomalous values that could distort the results of the classification and modeling. Outliers can skew results and affect model performance as well as clustering results since clustering is sensitive to extreme values. We did outlier detection using three algrothims respectively, Local Outlier Factor (LOF), isolation forest (IF) and Elliptic Envelope (EE); for visualization of this the outliers are in red and inliers are in blue. Two parameters we used for these methods were contamination and random_state. Random_state was set to 42 for reproducibility while contatminationw as set to 0..02 ie. 2% after trying various rates because there is a decent amount of skewness after using ssmote and the irregularness of data for medical  features as its varies greatly depending on people. However, the reason ccontatmination is not set higher is because normal data would end up being flagged as outliers
-•	LOF: Detects the local denity of data points and identifies points that are significantly lower compared to its neighbours where in it flags those outliers.
+Outlier detection is being done using three algorithms to identify exreme or anomalous values that could effect the results of the classification and modeling. Outliers can make our results not be accurate and affect model performance as well as clustering results since clustering is sensitive to extreme values. We did outlier detection using three algrothims: Local Outlier Factor (LOF), Isolation Forest (IF) and Elliptic Envelope (EE). The visualizations of these outliers are in red and inliers are in blue. Two parameters we used for these methods were contamination and random_state. Random_state was set to 42 for reproducibility while contatmination was set to 0.02 ie. 2% after trying various rates because there is a decent amount of skewness after using SMOTE and the irregularness of data for medical features as its varies greatly depending on people. However, the reason ccontatmination is not set higher is because normal data would end up being flagged as outliers.
+
+- LOF: Detects the local density of data points and identifies points that are significantly lower compared to its neighbours where in it flags those outliers.
+```python
+lof = LocalOutlierFactor(n_neighbors=n_neighbors, contamination=contamination)
+```
 ![LOF Outlier Detection](Local_Outlier_Factor_(LOF)_Plot.png)
-•	IF: the dataset is randomly portioned thereby isolating points, the more isolated a point is the more likely its an outlier this method is also useful for high dimensional data.
+- IF: the dataset is randomly portioned thereby isolating points, the more isolated a point is the more likely its an outlier this method is also useful for high dimensional data.
+```python
+iso_forest = IsolationForest(contamination=contamination, random_state=random_state)
+```
 ![IF Outlier Detection](Isolation_Forest_(IF)_Plot.png)
-•	EE: identifies points that lie outside the expected distribution as outliers. It works well when the data follows a normal distribution and detects outliers based on their deviation from the fitted "ellipse."
+- EE: identifies points that lie outside the expected distribution as outliers. It works well when the data follows a normal distribution and detects outliers based on their deviation from the fitted "ellipse."
+```python
+elliptic = EllipticEnvelope(contamination=contamination, random_state=random_state)
+```
 ![EE Outlier Detection](Elliptic_Envelope_(EE)_Plot.png)
-All three of these methods provided somewhat similar results which showed the outliers, after visualling all of the outliers we decided whether to remove them or not by running the program and checking if the classification accuracy increases or not as well as how the clustering does. After comparing results we noticed that removing outliers helped train our model with higher accuracy.
-as seen with the random forest classifcation done with outliers removed, and kept.
+
+All three of these methods provide somewhat similar results which showed the outliers, after visualling all of the outliers we decided whether to remove them or not by running the program and checking if the classification accuracy increases or not as well as how the clustering does. After comparing results we noticed that removing the outliers helped train our model with higher accuracy.
 
 Number of rows before cleaning: 20000
 Number of rows after cleaning: 18904
@@ -127,39 +143,65 @@ F1-score: 0.6642
 AUC-ROC: 0.8420
 
 ### Feature Selection
-In feature selection we identify the most important features to be used for predicting the target variable which is Diabetes_012 using Mututal information and Random Forest feature importance; we were also using Recursive Feature Elimination however as a lower score was better it was difficult incorporting it with the other two methods which had a higher score as better and averaging the score after combing the lists them would not give the best and most important features that should be used in relation to the target variable.
+In feature selection we identify the most important features to be used for predicting the target variable which is Diabetes_012 using Mututal information and Random Forest feature importance; we were also using Recursive Feature Elimination however as a lower score was better, it was difficult incorporting it with the other two methods which had a higher score because it would not give the best and most important features that should be used in relation to the target variable.
 
-A parameter called final_features_count was added to limit the number of top features to have selected at the end after extensive testing with various number of features the right amount was 6 features to be selected at the end for the most optimal training.
+A parameter called final_features_count was added to limit the number of top features to have selected at the end after extensive testing with various number of features. The right amount of features was 6 that were selected at the end for the most optimal training.
 
-Mutual information measures the dependdancy between each feature and the target variable and ranks the features by importance, most important has a higher score while least important feature to the target variable has a lower score. We then print the scores of each feature after the features are ranked by their mutual information scores.
+Mutual information measures the dependancy between each feature and the target variable and ranks the features by importance, most important has a higher score while least important feature to the target variable has a lower score. We then print the scores of each feature after the features are ranked by their mutual information scores. By peforming Mutual Information with the code below:
+
+```python
+    # Performing Mutual Information
+    mi = mutual_info_classif(X, y, random_state=42)
+    mi_scores = pd.Series(mi, index=X.columns).sort_values(ascending=False)
+    print(f"Top features by Mutual Information:")
+```
+We got back:
 
 Top features by Mutual Information:
-BMI                     0.400397
-Age                     0.320712
-Income                  0.243371
-GenHlth                 0.209824
-PhysHlth                0.185973
-MentHlth                0.145108
-Education               0.123041
-HighBP                  0.076119
-HighChol                0.055660
-DiffWalk                0.036203
+BMI:                     0.400397
+Age:                     0.320712
+Income:                  0.243371
+GenHlth:                 0.209824
+PhysHlth:                0.185973
+MentHlth:                0.145108
+Education:               0.123041
+HighBP:                  0.076119
+HighChol:                0.055660
+DiffWalk:                0.036203
 
-Random Forest feature importance is used to assess the importance of features by checking how useful it is in predicting the target variable, rf classifer is fit on the dataset and feature importance are retreived and printed.
+Random Forest feature importance is used to assess the importance of features by checking how useful it is in predicting the target variable, rf classifer is fit on the dataset and feature importance are retreived and printed. By performing Random Forest feature important with the code below:
+
+```python
+    # Perofmring Feature Importance from Random Forest
+    rf = RandomForestClassifier(random_state=42)
+    rf.fit(X, y)
+    rf_scores = pd.Series(rf.feature_importances_, index=X.columns).sort_values(ascending=False)
+    print(f"Feature Importances by Random Forest:")
+```
+
+We got back:
 
 Feature Importances by Random Forest:
-BMI                     0.143378
-Age                     0.142385
-GenHlth                 0.130126
-Income                  0.111363
-Education               0.075226
-PhysHlth                0.071757
-MentHlth                0.054882
-HighBP                  0.041824
-HighChol                0.032749
-Smoker                  0.029628
+BMI:                     0.143378
+Age:                     0.142385
+GenHlth:                 0.130126
+Income:                  0.111363
+Education:               0.075226
+PhysHlth:                0.071757
+MentHlth:                0.054882
+HighBP:                  0.041824
+HighChol:                0.032749
+Smoker:                  0.029628
 
-Combining these two methods ensures that we capture both non-linear(mutual info) and linear (rf) relationships, resulting in a more comprehensive selection of features that are most relevant to the task at hand
+Combining these two methods as such:
+```python
+    # Combine results by selecting top features from both methods
+    # For simplicity, take top features from both methods and ensure we have the desired number of final features.
+    mi_top_features = mi_scores.head(final_features_count).index.tolist()
+    rf_top_features = rf_scores.head(final_features_count).index.tolist()
+```
+
+Ensured that we capture both non-linear(mutual info) and linear (rf) relationships, resulting in a more comprehensive selection of features that are most relevant to the task at hand.
 
 Final Selected Features:
 Age
@@ -174,10 +216,49 @@ The top features selected by both methods are combined and we select the best 6 
 
 ![Top Features Correlation Matrix](Correlation_Matrix_Selected_Features.png)
 
+Now considering the evaluation of the models without feature selection, we got back:
 
+Best Silhouette Score for KMeans: 0.1868
+Best Silhouette Score for DBSCAN: 0.3448
+Best Silhouette Score for Hierarchical Clustering: 0.1624
+
+Random Forest (Tuned) Cross-Validation F1 Score (5-fold): Mean = 0.7256, Std = 0.0076
+Random Forest (Tuned) Accuracy: 0.7358
+Random Forest (Tuned) Precision: 0.7370
+Random Forest (Tuned) Recall: 0.7363
+Random Forest (Tuned) F1-score: 0.7366
+Random Forest (Tuned) AUC-ROC: 0.8904
+
+KNN Cross-Validation F1 Score (5-fold): Mean = 0.5591, Std = 0.0059
+KNN Accuracy: 0.5803
+KNN Precision: 0.5889
+KNN Recall: 0.5801
+KNN F1-score: 0.5770
+KNN AUC-ROC: 0.7638
+
+SVM Cross-Validation F1 Score (5-fold): Mean = 0.5721, Std = 0.0096
+SVM Accuracy: 0.5893
+SVM Precision: 0.5935
+SVM Recall: 0.5895
+SVM F1-score: 0.5905
+SVM AUC-ROC: 0.7741
+
+Training and Evaluating Random Forest (Default)...
+Mean F1-score from 5-fold CV: 0.7197
+Accuracy: 0.7374
+Precision: 0.7384
+Recall: 0.7378
+F1-score: 0.7381
+AUC-ROC: 0.8886
+
+These results are further discussed down below within the Hyperparameter Tuning section with the feature selection results. 
 ### Clustering
 
-KMeans Clustering: KMeans is a centroid-based algorithm that aims to partition the data into k clusters, minimizing the variance within each cluster. We test different values of k (from 2 to 20) and calculate the silhouette score for each. The silhouette score ranges from -1 to 1, with a higher score indicating better-defined clusters.
+KMeans Clustering: KMeans is a centroid-based algorithm that aims to partition the data into k clusters, minimizing the variance within each cluster. We test different values of k (from 2 to 20):
+```python
+RANGE = range(2, 21)
+```
+and calculate the silhouette score for each. The silhouette score ranges from -1 to 1, with a higher score indicating better-defined clusters.
 
 After looping through the range of k values, we print the best silhouette score achieved by KMeans.
 
