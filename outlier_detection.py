@@ -12,25 +12,25 @@ https://scikit-learn.org/stable/auto_examples/ensemble/plot_isolation_forest.htm
 https://github.com/spribylova/Python-Elliptic-Data/blob/main/elliptic_envelope.ipynb?source=post_page-----673a39e3b315--------------------------------
 """
 
-def detect_outliers_lof(data, numerical_columns, n_neighbors=20, contamination=0.01):
+def detect_outliers_lof(data, numerical_columns, n_neighbors=20, contamination=0.02):
     """
     Detect outliers in the given data using the Local Outlier Factor (LOF) algorithm.
     @param data - The dataset containing the numerical columns.
     @param numerical_columns - The numerical columns in the dataset.
     @param n_neighbors - The number of neighbors to consider (default is 20).
-    @param contamination - The proportion of outliers in the dataset (default is 0.01).
+    @param contamination - The proportion of outliers in the dataset (default is 0.02).
     @return A boolean array indicating whether each data point is an outlier or not.
     """
     lof = LocalOutlierFactor(n_neighbors=n_neighbors, contamination=contamination)
     lof_flags = lof.fit_predict(data[numerical_columns])
     return lof_flags == -1  
 
-def detect_outliers_isoforest(data, numerical_columns, contamination=0.01, random_state=42):
+def detect_outliers_isoforest(data, numerical_columns, contamination=0.02, random_state=42):
     """
     Detect outliers in the given data using Isolation Forest algorithm.
     @param data - The dataset containing the numerical columns.
     @param numerical_columns - The numerical columns in the dataset.
-    @param contamination - The proportion of outliers in the data (default is 0.01).
+    @param contamination - The proportion of outliers in the data (default is 0.02).
     @param random_state - The random seed for reproducibility (default is 42).
     @return A boolean array indicating whether each data point is an outlier.
     """
@@ -38,7 +38,7 @@ def detect_outliers_isoforest(data, numerical_columns, contamination=0.01, rando
     iso_forest_flags = iso_forest.fit_predict(data[numerical_columns])
     return iso_forest_flags == -1
 
-def detect_outliers_elliptic(data, numerical_columns, contamination=0.01, random_state=42):
+def detect_outliers_elliptic(data, numerical_columns, contamination=0.02, random_state=42):
     """
     Detect outliers in the data using the Elliptic Envelope method.
     @param data - The dataset containing the numerical columns.
