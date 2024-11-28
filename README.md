@@ -107,6 +107,9 @@ Outlier detection is being done using three algorithms to identify exreme or ano
 All three of these methods provided somewhat similar results which showed the outliers, after visualling all of the outliers we decided whether to remove them or not by running the program and checking if the classification accuracy increases or not as well as how the clustering does. After comparing results we noticed that removing outliers helped train our model with higher accuracy.
 as seen with the random forest classifcation done with outliers removed, and kept.
 
+Number of rows before cleaning: 20000
+Number of rows after cleaning: 18904
+
 Performing 5-fold cross-validation for Default Random Forest with outliers removed
 Mean F1-score from 5-fold CV: 0.6557
 Accuracy: 0.6793
@@ -124,6 +127,44 @@ F1-score: 0.6642
 AUC-ROC: 0.8420
 
 ### Feature Selection
+In feature selection we identify the most important features to be used for predicting the target variable which is Diabetes_012 using Mututal information and Random Forest feature importance; we were also using Recursive Feature Elimination however as a lower score was better it was difficult incorporting it with the other two methods which had a higher score as better and averaging the score after combing the lists them would not give the best and most important features that should be used in relation to the target variable.
+
+A parameter called final_features_count was added to limit the number of top features to have selected at the end after extensive testing with various number of features the right amount was 6 features to be selected at the end for the most optimal training.
+
+Mutual information measures the dependdancy between each feature and the target variable and ranks the features by importance, most important has a higher score while least important feature to the target variable has a lower score. We then print the scores of each feature after the features are ranked by their mutual information scores.
+
+Top features by Mutual Information:
+BMI                     0.400397
+Age                     0.320712
+Income                  0.243371
+GenHlth                 0.209824
+PhysHlth                0.185973
+MentHlth                0.145108
+Education               0.123041
+HighBP                  0.076119
+HighChol                0.055660
+DiffWalk                0.036203
+
+Random Forest feature importance is used to assess the importance of features by checking how useful it is in predicting the target variable, rf classifer is fit on the dataset and feature importance are retreived and printed.
+
+Feature Importances by Random Forest:
+BMI                     0.143378
+Age                     0.142385
+GenHlth                 0.130126
+Income                  0.111363
+Education               0.075226
+PhysHlth                0.071757
+MentHlth                0.054882
+HighBP                  0.041824
+HighChol                0.032749
+Smoker                  0.029628
+
+Combining these two methods ensures that we capture both non-linear(mutual info) and linear (rf) relationships, resulting in a more comprehensive selection of features that are most relevant to the task at hand
+
+The top features selected by both methods are combined and we select the best 6 features, after merging the lists given by both methods. However, we also make sure to do a correlation analysis of these top features selected for better clarity in our selection to make sure they aren't strongly correlated with one another using a heatmap. 
+
+![Top Features Correlation Matrix](Correlation_Matrix_Selected_Features.png)
+
 
 ### Clustering
 
