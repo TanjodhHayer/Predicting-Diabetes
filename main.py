@@ -100,7 +100,7 @@ def main(args):
     print("EDA...")
     perform_eda(data_resampled)
 
-    print("Performing Outlier Detectiont")
+    print("Performing Outlier Detection")
     numerical_columns = ['BMI', 'GenHlth', 'MentHlth', 'PhysHlth', 'Age', 'Education', 'Income']
     lof_outliers, iso_outliers, ee_outliers = run_outlier_detection(data_resampled, numerical_columns)
 
@@ -111,10 +111,10 @@ def main(args):
     selected_data = select_features(data_resampled)
 
     print("Applying clustering")
-    apply_clustering(selected_data, target_column="Diabetes_012")
+    #apply_clustering(selected_data, target_column="Diabetes_012")
 
     print("Running classification")
-    run_classifiers(selected_data, target_column="Diabetes_012")
+    #run_classifiers(selected_data, target_column="Diabetes_012")
     
     # Call this function to run a default Random Forest
     run_rf_with_cv(selected_data, target_column="Diabetes_012")

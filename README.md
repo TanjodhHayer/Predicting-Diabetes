@@ -77,19 +77,57 @@ Finally, to save time during subsequent runs, the processed dataset was saved as
     If the file exists, the code skips preprocessing and directly loads the cleaned, balanced, and scaled dataset.
     If the file does not exist, the preprocessing pipeline runs on the original dataset to regenerate and save the processed version.
 
-## Class Distribution Before SMOTE
+### Class Distribution Before SMOTE
 ![Class Distribution Before SMOTE](/Diabetes_Class_Distribution_Before_SMOTE.png "Class Distribution Before SMOTE")
 
-## Class Distribution After SMOTE and Stratified Sampling
+### Class Distribution After SMOTE and Stratified Sampling
 ![Class Distribution After SMOTE and Stratified Sampling](/Diabetes_Class_Distribution_After_SMOTE_&_Stratifed_Sampling.png "Class Distribution After SMOTE & Subsampling")
 
 ### Exploratory Data Analysis (EDA)
 
-### Clustering
+Exploratory Data Analysis (EDA) is an essential step in understanding the underlying patterns and relationships within a dataset. It helps to detect anomalies, check assumptions, and provide insights into the structure of the data. In this analysis, we performed EDA by calculating summary statistics, visualizing key features, and analyzing the correlations between them.
+
+Summary Statistics: We began by generating a summary of the dataset using the describe() function. This provides basic statistical metrics, such as the mean, standard deviation, minimum, maximum, and percentiles for all numerical features, helping to understand the distribution and range of values in the dataset.
+![Summary Statistics](eda_plots/eda_summary_statistics.png)
+
+Visualizing Distributions: Histograms were used to visualize the distributions of key features. This step helps identify the shape of the distributions (e.g., normal, skewed) and potential transformations needed to improve model performance or meet statistical assumptions.
+![Key Features Histograms](eda_plots/Key_Features_Histograms.png)
+
+Correlation Analysis: We calculated the correlation matrix to examine relationships between numerical features. A heatmap was created to visualize these correlations, enabling us to understand how features are related and identify any potential multicollinearity or redundant features.
+![Correlation Heatmap](eda_plots/Correlation_Heatmap.png)
 
 ### Outlier Detection
+Outlier detection is being done using three algorithms to identify exreme or anomalous values that could distort the results of the classification and modeling. Outliers can skew results and affect model performance as well as clustering results since clustering is sensitive to extreme values. We did outlier detection using three algrothims respectively, Local Outlier Factor (LOF), isolation forest (IF) and Elliptic Envelope (EE); for visualization of this the outliers are in red and inliers are in blue. Two parameters we used for these methods were contamination and random_state. Random_state was set to 42 for reproducibility while contatminationw as set to 0..02 ie. 2% after trying various rates because there is a decent amount of skewness after using ssmote and the irregularness of data for medical  features as its varies greatly depending on people. However, the reason ccontatmination is not set higher is because normal data would end up being flagged as outliers
+•	LOF: Detects the local denity of data points and identifies points that are significantly lower compared to its neighbours where in it flags those outliers.
+![LOF Outlier Detection](Local_Outlier_Factor_(LOF)_Plot.png)
+•	IF: the dataset is randomly portioned thereby isolating points, the more isolated a point is the more likely its an outlier this method is also useful for high dimensional data.
+![IF Outlier Detection](Isolation_Forest_(IF)_Plot.png)
+•	EE: identifies points that lie outside the expected distribution as outliers. It works well when the data follows a normal distribution and detects outliers based on their deviation from the fitted "ellipse."
+![EE Outlier Detection](Elliptic_Envelope_(EE)_Plot.png)
+All three of these methods provided somewhat similar results which showed the outliers, after visualling all of the outliers we decided whether to remove them or not by running the program and checking if the classification accuracy increases or not as well as how the clustering does. After comparing results we noticed that removing outliers helped train our model with higher accuracy.
+as seen with the random forest classifcation done with outliers removed, and kept.
+
+Performing 5-fold cross-validation for Default Random Forest with outliers removed
+Mean F1-score from 5-fold CV: 0.6557
+Accuracy: 0.6793
+Precision: 0.6728
+Recall: 0.6792
+F1-score: 0.6751
+AUC-ROC: 0.8468
+
+Performing 5-fold cross-validation for Default Random Forest with outliers kept
+Mean F1-score from 5-fold CV: 0.6642
+Accuracy: 0.6673
+Precision: 0.6615
+Recall: 0.6685
+F1-score: 0.6642
+AUC-ROC: 0.8420
 
 ### Feature Selection
+
+### Clustering
+
+
 
 ### Classification
 
