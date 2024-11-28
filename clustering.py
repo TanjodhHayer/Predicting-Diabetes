@@ -7,9 +7,29 @@ from sklearn.manifold import TSNE
 from sklearn.metrics import silhouette_score
 from scipy.cluster.hierarchy import linkage, fcluster
 
+"""
+References for code used in this file:
+https://www.w3schools.com/python/python_ml_k-means.asp
+https://www.youtube.com/watch?v=pDaDbobxIkA&ab_channel=DataScienceTeacherBrandyn
+https://www.kdnuggets.com/2022/08/implementing-dbscan-python.html
+https://www.geeksforgeeks.org/dbscan-clustering-in-ml-density-based-clustering/
+https://www.youtube.com/watch?v=-EFB6icKr7E&ab_channel=MazenAhmed
+https://stackoverflow.com/questions/54705389/how-to-define-a-range-of-values-for-the-eps-parameter-of-sklearn-cluster-dbscan
+https://www.w3schools.com/python/python_ml_hierarchial_clustering.asp
+https://www.geeksforgeeks.org/scipy-cluster-hierarchy-dendrogram/
+https://joernhees.de/blog/2015/08/26/scipy-hierarchical-clustering-and-dendrogram-tutorial/
+https://plotly.com/python/pca-visualization/
+"""
+
 RANGE = range(2, 21)
 
 def apply_clustering(data, target_column="Diabetes_012"):
+    """
+    Apply clustering algorithms (KMeans, DBSCAN, Hierarchical Clustering) to the data and evaluate their performance using silhouette scores. 
+    @param data - the dataset
+    @param target_column - the target column to drop from the data
+    @return None
+    """
     X = data.drop(target_column, axis=1) 
 
     kmeans_scores = []
@@ -59,6 +79,13 @@ def apply_clustering(data, target_column="Diabetes_012"):
 
 
 def plot_combined_silhouette_scores(kmeans_scores, dbscan_scores, hierarchical_scores, eps_range):
+    """
+    Plot the silhouette scores for KMeans, DBSCAN, and Hierarchical Clustering algorithms.
+    @param kmeans_scores - Silhouette scores for KMeans algorithm
+    @param dbscan_scores - Silhouette scores for DBSCAN algorithm
+    @param hierarchical_scores - Silhouette scores for Hierarchical Clustering algorithm
+    @param eps_range - Range of epsilon values for DBSCAN algorithm
+    """
     _, silhouette_plot = plt.subplots(1, 3, figsize=(18, 6))
 
     # KMeans Silhouette Scores
@@ -87,7 +114,13 @@ def plot_combined_silhouette_scores(kmeans_scores, dbscan_scores, hierarchical_s
 
 
 def plot_clustering_results(X, kmeans_labels, dbscan_labels, hierarchical_labels):
-    # Perform PCA for visualization 
+    """
+    Plot the clustering results using PCA for visualization.
+    @param X - The data points
+    @param kmeans_labels - Labels assigned by KMeans clustering
+    @param dbscan_labels - Labels assigned by DBSCAN clustering
+    @param hierarchical_labels - Labels assigned by Hierarchical clustering
+    """
     pca = PCA(n_components=2)
     X_pca = pca.fit_transform(X)
     
