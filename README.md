@@ -398,9 +398,9 @@ AUC-ROC: 0.8420
 
 Now comparing this with the results without feature selection mentioned earlier (in the feature selection section), we can see that with feature selection, the clustering performed much better based off the silhoutte scores. However, without feature selection the Random Forest performed much better than the other models. With feature selection the Random Forest model was surprinsgly lower and that made us question why? Looking deeper into this, we found out that due to the robustness of the model, its ability to remove unnecessary features, and its ability to select complex patterns was the reason why it performed better without feature selection. 
 
-### Conclusion
+## Conclusion
 
-## Insights
+### Insights
 The main features that we discovered that have the largest impact on whether an individual has diabetes are as follows:
 
 Education, Age, BMI, Mental Health, General Health, and Physical Health.
@@ -410,5 +410,5 @@ Education, Age, BMI, Mental Health, General Health, and Physical Health.
 - For the BMI, this is a measure of body fat levels and the higher the BMI is means that the person is most likely obese. In our findings, higher BMI individuals are way more likely to have diabetes as compared to someone with a low BMI.
 - With mental health, we have found that individuals that were rated higher on the scale (a worse mental health) also have a higher chance of having diabetes. This can be due to stress eating and other factors involved with depression and anxiety and other mental issues. Physical and general health as well we have found that with individuals who are generally healthy and stay fit they have a lower chance of contracting diabetes.
 
-## Lessons learned: 
+### Lessons learned: 
 Having able to complete this project, we have learnt quite a lot about machine learning / data mining. Most of our learning was the importance of choosing the right model for the right task at hand. Knowing all these models made us initially believe we can use any and achieve appropriate results. We were totally wrong. Just from running feature selection and being exposed to a downgrade in performance for Random Forest showed to us that not everything gets better or performs better. Our group didn't know much about the different and appropriate ways to plot specific results. Such as using heatmaps vs straight line plots. Researching more about this allowed us to understand how intrepretation of data is crucial and how curcial the visualizations need to be. We believe that with good visualizations, you would be able to spot things you could have missed initially in your results. For example, looking vs trying to find outliers could be done easier in the plots. We have learned quite a lot about how data is cleaned and used to solve / provide insight on specific topics. In our case, it was the medical field. Being able to research different models and characteristics allowed us to learn more about how to perform many of these data mining tasks and something that we wouldn't have done on our own. Most of our learning came from the many complications we had in our code trying to make our results the most optimal and apply the data mining process to the best of our ability. Again, this was a great project that allowed us to learn quite a lot. 
