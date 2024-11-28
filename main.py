@@ -44,9 +44,6 @@ def preprocess_data(data, filepath):
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(X_imputed)
 
-    # Convert back to DataFrame for easy handling
-    data_processed = pd.DataFrame(X_scaled, columns=X.columns)
-
     # EDA: Class distribution before SMOTE
     class_distribution = y.value_counts()
     class_distribution.plot(kind='bar')
