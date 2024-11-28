@@ -50,9 +50,9 @@ def run_classifiers(data, target_column="Diabetes_012"):
     randomized_search = RandomizedSearchCV(
         estimator=rf,
         param_distributions=param_distributions,
-        n_iter=50,  # Number of combinations to try
-        cv=5,  # 5-fold cross-validation
-        scoring='f1_macro',  # Optimize for F1-score (macro-average)
+        n_iter=50, 
+        cv=5,  
+        scoring='f1_macro',  
         verbose=0,
         random_state=42,
         n_jobs=-1
@@ -63,9 +63,9 @@ def run_classifiers(data, target_column="Diabetes_012"):
     best_rf = randomized_search.best_estimator_
     print("Best Hyperparameters for Random Forest:", randomized_search.best_params_)
 
-    # Store all the models in a dictionary so that we can iterate over it
+    # Store all the models in a dictionary so that we can iterate over it (we included the tuned rf)
     models = {
-        "Random Forest (Tuned)": best_rf,  # Tuned RF
+        "Random Forest (Tuned)": best_rf,  
         "KNN": KNeighborsClassifier(),     
         "SVM": SVC(kernel='rbf', probability=True, random_state=42)       
     }
@@ -122,7 +122,7 @@ def plot_confusion_matrices(y_true_list, y_pred_list, model_names):
     """
     # Create a figure for all confusion matrices
     n_models = len(model_names)
-    fig, axes = plt.subplots(1, n_models, figsize=(6 * n_models, 6))  # 1 row, n_models columns
+    _, axes = plt.subplots(1, n_models, figsize=(6 * n_models, 6))  
     for i, (y_true, y_pred, model_name) in enumerate(zip(y_true_list, y_pred_list, model_names)):
         cm = confusion_matrix(y_true, y_pred)
         sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=np.unique(y_true), yticklabels=np.unique(y_true), ax=axes[i])
@@ -141,30 +141,26 @@ def plot_combined_roc_curves(y_true_list, probabilities, model_names):
     @return None. The ROC curves are plotted and saved as "combined_roc_curves.png".
     """
     n_models = len(model_names)  # Number of models
-    fig, axes = plt.subplots(1, n_models, figsize=(6 * n_models, 6))  # 1 row, n_models columns
+    _, axes = plt.subplots(1, n_models, figsize=(6 * n_models, 6))
     
     for i, (y_true, probability, model_name) in enumerate(zip(y_true_list, probabilities, model_names)):
         if probability is None:
             print(f"ROC Curve not available for {model_name} (no probabilities predicted).")
             continue
         
-        ax = axes[i]  # Select the current subplot axis
+        # Select the current subplot axis
+        plot = axes[i]  
         
-        if probability.ndim == 1:  # Binary classification
-            fpr, tpr, _ = roc_curve(y_true, probability)
-            auc = roc_auc_score(y_true, probability)
-            ax.plot(fpr, tpr, label=f"AUC = {auc:.4f}")
-        else:  # Multi-class classification
-            for i_class in range(probability.shape[1]):
-                fpr, tpr, _ = roc_curve(y_true == i_class, probability[:, i_class])
-                auc = roc_auc_score(y_true == i_class, probability[:, i_class])
-                ax.plot(fpr, tpr, label=f"Class {i_class} AUC = {auc:.4f}")
+        for i_class in range(probability.shape[1]):
+            fpr, tpr, _ = roc_curve(y_true == i_class, probability[:, i_class])
+            auc = roc_auc_score(y_true == i_class, probability[:, i_class])
+            plot.plot(fpr, tpr, label=f"Class {i_class} AUC = {auc:.4f}")
         
-        ax.plot([0, 1], [0, 1], linestyle="--", color="gray", label="Random Guess")
-        ax.set_xlabel("False Positive Rate")
-        ax.set_ylabel("True Positive Rate")
-        ax.set_title(f"{model_name} ROC Curve")
-        ax.legend(loc="lower right")
+        plot.plot([0, 1], [0, 1], linestyle="--", color="gray", label="Random Guess")
+        plot.set_xlabel("False Positive Rate")
+        plot.set_ylabel("True Positive Rate")
+        plot.set_title(f"{model_name} ROC Curve")
+        plot.legend(loc="lower right")
     
     plt.tight_layout()
     plt.savefig("combined_roc_curves.png")
@@ -238,18 +234,11 @@ def plot_roc_curve_single(y_true, probability, model_name):
     @param model_name - Name of the model
     @return None
     """
-    # This is for Binary classification
-    if probability.ndim == 1:  
-        fpr, tpr, _ = roc_curve(y_true, probability)
-        auc = roc_auc_score(y_true, probability)
-        plt.figure(figsize=(8, 6))
-        plt.plot(fpr, tpr, label=f"AUC = {auc:.4f}")
-    else:  # This is for Multi-class classification
-        plt.figure(figsize=(8, 6))
-        for i in range(probability.shape[1]):
-            fpr, tpr, _ = roc_curve(y_true == i, probability[:, i])
-            auc = roc_auc_score(y_true == i, probability[:, i])
-            plt.plot(fpr, tpr, label=f"Class {i} AUC = {auc:.4f}")
+    plt.figure(figsize=(8, 6))
+    for i in range(probability.shape[1]):
+        fpr, tpr, _ = roc_curve(y_true == i, probability[:, i])
+        auc = roc_auc_score(y_true == i, probability[:, i])
+        plt.plot(fpr, tpr, label=f"Class {i} AUC = {auc:.4f}")
     
     plt.plot([0, 1], [0, 1], linestyle="--", color="gray", label="Random Guess")
     plt.title(f"{model_name} ROC Curve")
