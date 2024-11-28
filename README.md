@@ -317,10 +317,22 @@ Best Silhouette Score for Hierarchical Clustering: 0.3701
 1. Data Splitting
 
 The dataset was split into features (X) and target (y) based on the specified target column. The data was then divided into training and test sets using the train_test_split function, with 20% of the data allocated to the test set. Stratified sampling was applied to ensure that the class distribution remained consistent between the training and testing sets.
+```python
+    X = data.drop(columns=[target_column])
+    y = data[target_column]
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y, random_state=42)
+```
 
 2. Model Training and Hyperparameter Tuning (Random Forest)
 
 Hyperparameter tuning was performed on the Random Forest model using RandomizedSearchCV. This approach allowed for random sampling of key hyperparameters such as the number of estimators, maximum depth, minimum samples required for splitting, and other important factors. The scoring metric used for tuning was the F1 score (macro), optimizing for balanced performance across all classes. After identifying the best set of parameters, the tuned Random Forest model was trained and evaluated on the test set.
+```python
+    randomized_search = RandomizedSearchCV(...)
+    randomized_search.fit(X_train, y_train)
+    
+    # Get the best Random Forest model
+    best_rf = randomized_search.best_estimator_
+```
 
 3. Cross-Validation
 
