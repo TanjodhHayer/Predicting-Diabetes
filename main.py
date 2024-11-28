@@ -117,7 +117,7 @@ def main(args):
     run_classifiers(selected_data, target_column="Diabetes_012")
     
     # Call this function to run a default Random Forest
-    run_rf_with_cv(selected_data, target_column="Diabetes_012")
+    #run_rf_with_cv(selected_data, target_column="Diabetes_012")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Data Mining Project")

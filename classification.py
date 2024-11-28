@@ -185,7 +185,7 @@ def run_rf_with_cv(data, target_column="Diabetes_012"):
     rf = RandomForestClassifier(random_state=42)
     
     # Perform 5-fold cross-validation on the training set
-    print("Performing 5-fold cross-validation for Random Forest Default")
+    print("Training and Evaluating Random Forest (Default)...")
     cv_scores = cross_val_score(rf, X_train, y_train, cv=5, scoring='f1_macro')  # Use training set only
     print(f"Mean F1-score from 5-fold CV: {np.mean(cv_scores):.4f}")
     

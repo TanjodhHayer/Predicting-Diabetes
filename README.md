@@ -111,7 +111,7 @@ Number of rows before cleaning: 20000
 Number of rows after cleaning: 18904
 
 Performing 5-fold cross-validation for Default Random Forest with outliers removed
-Mean F1-score from 5-fold CV: 0.6557
+Mean F1-score from 5-fold CV: 0.6757
 Accuracy: 0.6793
 Precision: 0.6728
 Recall: 0.6792
@@ -161,14 +161,21 @@ Smoker                  0.029628
 
 Combining these two methods ensures that we capture both non-linear(mutual info) and linear (rf) relationships, resulting in a more comprehensive selection of features that are most relevant to the task at hand
 
+Final Selected Features:
+Age
+PhysHlth
+Education
+GenHlth
+MentHlth
+BMI
+
+
 The top features selected by both methods are combined and we select the best 6 features, after merging the lists given by both methods. However, we also make sure to do a correlation analysis of these top features selected for better clarity in our selection to make sure they aren't strongly correlated with one another using a heatmap. 
 
 ![Top Features Correlation Matrix](Correlation_Matrix_Selected_Features.png)
 
 
 ### Clustering
-
-
 
 ### Classification
 

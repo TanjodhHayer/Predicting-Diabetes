@@ -12,7 +12,7 @@ https://scikit-learn.org/stable/auto_examples/ensemble/plot_isolation_forest.htm
 https://github.com/spribylova/Python-Elliptic-Data/blob/main/elliptic_envelope.ipynb?source=post_page-----673a39e3b315--------------------------------
 """
 
-def detect_outliers_lof(data, numerical_columns, n_neighbors=20, contamination=0.02):
+def detect_outliers_lof(data, numerical_columns, n_neighbors=20, contamination=0.01):
     """
     Detect outliers in the given data using the Local Outlier Factor (LOF) algorithm.
     @param data - The dataset containing the numerical columns.
@@ -25,7 +25,7 @@ def detect_outliers_lof(data, numerical_columns, n_neighbors=20, contamination=0
     lof_flags = lof.fit_predict(data[numerical_columns])
     return lof_flags == -1  
 
-def detect_outliers_isoforest(data, numerical_columns, contamination=0.02, random_state=42):
+def detect_outliers_isoforest(data, numerical_columns, contamination=0.01, random_state=42):
     """
     Detect outliers in the given data using Isolation Forest algorithm.
     @param data - The dataset containing the numerical columns.
@@ -38,7 +38,7 @@ def detect_outliers_isoforest(data, numerical_columns, contamination=0.02, rando
     iso_forest_flags = iso_forest.fit_predict(data[numerical_columns])
     return iso_forest_flags == -1
 
-def detect_outliers_elliptic(data, numerical_columns, contamination=0.02, random_state=42):
+def detect_outliers_elliptic(data, numerical_columns, contamination=0.01, random_state=42):
     """
     Detect outliers in the data using the Elliptic Envelope method.
     @param data - The dataset containing the numerical columns.
