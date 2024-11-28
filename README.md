@@ -254,19 +254,41 @@ AUC-ROC: 0.8886
 These results are further discussed down below within the Hyperparameter Tuning section with the feature selection results. 
 ### Clustering
 
-KMeans Clustering: KMeans is a centroid-based algorithm that aims to partition the data into k clusters, minimizing the variance within each cluster. We test different values of k (from 2 to 20):
+KMeans Clustering: KMeans is a centroid-based algorithm that aims to partition the data into k clusters, minimizing the variance within each cluster. We test different values of k (from 2 to 20) (21 non inclusive):
 ```python
 RANGE = range(2, 21)
 ```
-and calculate the silhouette score for each. The silhouette score ranges from -1 to 1, with a higher score indicating better-defined clusters.
+and calculate the silhouette score for each. The silhouette score ranges from -1 to 1, with a higher score indicating better-defined clusters. 
 
 After looping through the range of k values, we print the best silhouette score achieved by KMeans.
+```python
+    for k in RANGE:
+        kmeans = KMeans(n_clusters=k, random_state=42)
+        kmeans_labels = kmeans.fit_predict(X)
+        score = silhouette_score(X, kmeans_labels)
+        kmeans_scores.append(score)
+```
 
 DBSCAN Clustering: DBSCAN (Density-Based Spatial Clustering of Applications with Noise) groups points that are closely packed together while marking points in low-density regions as outliers. The eps parameter defines the maximum distance between two points for them to be considered neighbors, and min_samples specifies the minimum number of points required to form a dense region (cluster).
 
-We evaluate DBSCAN by testing different values of eps (from 0.5 to 5) and calculate the silhouette score. If DBSCAN produces only one cluster (e.g., when all points are considered noise), we assign a silhouette score of -1 (indicating poor clustering). The best DBSCAN silhouette score is then printed.
+We evaluate DBSCAN by testing different values of eps (from 0.5 to 5) and calculate the silhouette score. If DBSCAN produces only one cluster (e.g., when all points are considered noise), we assign a silhouette score of -1 (indicating poor clustering). 
+```python
+        if len(set(dbscan_labels)) > 1:
+            score = silhouette_score(X, dbscan_labels)
+            dbscan_scores.append(score)
+        else:
+            dbscan_scores.append(-1)
+```
+The best DBSCAN silhouette score is then printed.
 
-Hierarchical Clustering: Hierarchical clustering builds a tree-like structure called a dendrogram, which allows us to visualize the hierarchical relationship between data points. We apply the ward method with Euclidean distance, and for each number of clusters (from 2 to 20), we calculate the silhouette score. The best silhouette score for hierarchical clustering is also printed.
+Hierarchical Clustering: Hierarchical clustering builds a tree-like structure called a dendrogram, which allows us to visualize the hierarchical relationship between data points. We apply the ward method with Euclidean distance, and for each number of clusters (from 2 to 20), we calculate the silhouette score. 
+```python
+    for i in RANGE:
+        hierarchical_labels = fcluster(linkage_with_euclidean, i, criterion='maxclust')
+        score = silhouette_score(X, hierarchical_labels)
+        hierarchical_scores.append(score)
+```
+The best silhouette score for hierarchical clustering is also printed.
 
 Evaluation Using Silhouette Scores: The silhouette score is a crucial metric for evaluating the quality of clustering. It measures how similar each point is to its own cluster compared to other clusters. We compare the silhouette scores for KMeans, DBSCAN, and Hierarchical Clustering to determine which method performs best on the dataset.
 
@@ -302,7 +324,12 @@ Hyperparameter tuning was performed on the Random Forest model using RandomizedS
 
 3. Cross-Validation
 
-Cross-validation was performed using StratifiedKFold with 5 folds to ensure each fold contained a proportional representation of each class. This process was used to evaluate the models (Random Forest, KNN, and SVM) with 5-fold cross-validation, and the mean and standard deviation of the F1 score (macro) were reported. Once cross-validation was completed, each model was trained on the entire training dataset and evaluated on the test set.
+Cross-validation was performed using StratifiedKFold with 5 folds to ensure each fold contained a proportional representation of each class. 
+```python
+    # Cross-validation setup, we are using 5 folds
+    cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+```
+This process was used to evaluate the models (Random Forest, KNN, and SVM) with 5-fold cross-validation, and the mean and standard deviation of the F1 score (macro) were reported. Once cross-validation was completed, each model was trained on the entire training dataset and evaluated on the test set.
 
 4. Model Evaluation Metrics
 
@@ -324,10 +351,10 @@ Confusion matrices were plotted for each model to visualize the distribution of 
 
 The hyperparameter tuning of the Random Forest model resulted in a significantly improved model with optimized parameters. This tuned model outperformed the default Random Forest model, which also showed good performance but with slightly lower F1 and AUC-ROC scores compared to the tuned version.
 
+The Random Forest (Tuned) model delivered the best overall performance, excelling across all metrics, including F1-score and AUC-ROC. The hyperparameter tuning process notably enhanced its performance. However, KNN and SVM performed less effectively, with SVM showing a much better AUC-ROC than KNN but still not as good as Random Forest models in terms of other key performance metrics.
 
-The Random Forest (Tuned) model delivered the best overall performance, excelling across all metrics, including F1-score and AUC-ROC. The hyperparameter tuning process notably enhanced its performance. In contrast, KNN and SVM performed less effectively, with SVM showing a marginally better AUC-ROC than KNN but still falling behind the Random Forest models in terms of other key performance metrics.
+Looking at the results with feature selection, we get:
 
-Training and Evaluating Random Forest (Tuned)...
 Random Forest (Tuned) Cross-Validation F1 Score (5-fold): Mean = 0. 6757
 Random Forest (Tuned) Accuracy: 0.6793
 Random Forest (Tuned) Precision: 0.6728
@@ -335,7 +362,6 @@ Random Forest (Tuned) Recall: 0.6792
 Random Forest (Tuned) F1-score: 0.6751
 Random Forest (Tuned) AUC-ROC: 0.8468
 
-Training and Evaluating KNN...
 KNN Cross-Validation F1 Score (5-fold): Mean = 0.5198
 KNN Accuracy: 0.5231
 KNN Precision: 0.5177
@@ -343,7 +369,6 @@ KNN Recall: 0.5244
 KNN F1-score: 0.5155
 KNN AUC-ROC: 0.7126
 
-Training and Evaluating SVM...
 SVM Cross-Validation F1 Score (5-fold): Mean = 0.5331
 SVM Accuracy: 0.5242
 SVM Precision: 0.5328
@@ -359,6 +384,6 @@ Recall: 0.6685
 F1-score: 0.6642
 AUC-ROC: 0.8420
 
-
+Now comparing this with the results without feature selection mentioned earlier (in the feature selection section), we can see that with feature selection, the clustering performed much better based off the silhoutte scores. However, without feature selection the Random Forest performed much better than the other models. With feature selection the Random Forest model was surprinsgly lower and that made us question why? Looking deeper into this, we found out that due to the robustness of the model, its ability to remove unnecessary features, and its ability to select complex patterns was the reason why it performed better without feature selection. 
 
 ### Conclusion
