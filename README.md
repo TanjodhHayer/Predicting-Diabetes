@@ -177,8 +177,107 @@ The top features selected by both methods are combined and we select the best 6 
 
 ### Clustering
 
+KMeans Clustering: KMeans is a centroid-based algorithm that aims to partition the data into k clusters, minimizing the variance within each cluster. We test different values of k (from 2 to 20) and calculate the silhouette score for each. The silhouette score ranges from -1 to 1, with a higher score indicating better-defined clusters.
+
+After looping through the range of k values, we print the best silhouette score achieved by KMeans.
+
+DBSCAN Clustering: DBSCAN (Density-Based Spatial Clustering of Applications with Noise) groups points that are closely packed together while marking points in low-density regions as outliers. The eps parameter defines the maximum distance between two points for them to be considered neighbors, and min_samples specifies the minimum number of points required to form a dense region (cluster).
+
+We evaluate DBSCAN by testing different values of eps (from 0.5 to 5) and calculate the silhouette score. If DBSCAN produces only one cluster (e.g., when all points are considered noise), we assign a silhouette score of -1 (indicating poor clustering). The best DBSCAN silhouette score is then printed.
+
+Hierarchical Clustering: Hierarchical clustering builds a tree-like structure called a dendrogram, which allows us to visualize the hierarchical relationship between data points. We apply the ward method with Euclidean distance, and for each number of clusters (from 2 to 20), we calculate the silhouette score. The best silhouette score for hierarchical clustering is also printed.
+
+Evaluation Using Silhouette Scores: The silhouette score is a crucial metric for evaluating the quality of clustering. It measures how similar each point is to its own cluster compared to other clusters. We compare the silhouette scores for KMeans, DBSCAN, and Hierarchical Clustering to determine which method performs best on the dataset.
+
+To better understand how each clustering method performs, we visualize the silhouette scores using line plots. Three subplots are generated:
+
+The first plot shows the silhouette scores for KMeans as a function of the number of clusters (k).
+The second plot shows the silhouette scores for DBSCAN as a function of the eps value.
+The third plot shows the silhouette scores for Hierarchical Clustering as a function of the number of clusters.
+
+![Silhouette Scores for clustering methods](Silhouette_Scores.png)
+
+After clustering, we visualize the results in a two-dimensional space using Principal Component Analysis (PCA), a technique for dimensionality reduction. PCA reduces the dimensionality of the data while preserving the variance, allowing us to project high-dimensional data onto a 2D plane for visualization.
+
+We plot the clustering results for each algorithm (KMeans, DBSCAN, and Hierarchical) on the same 2D plane:
+
+Each data point is colored based on the cluster label assigned by the corresponding algorithm.
+This visualization helps us understand the spatial distribution of the clusters and assess how well the clustering algorithm has grouped the data points.
+
+![Clustering Results](Clustering_Results_PCA.png)
+
+Best Silhouette Score for KMeans: 0.3867
+Best Silhouette Score for DBSCAN: 0.6453
+Best Silhouette Score for Hierarchical Clustering: 0.3701
+
 ### Classification
+1. Data Splitting
+
+The dataset was split into features (X) and target (y) based on the specified target column. The data was then divided into training and test sets using the train_test_split function, with 20% of the data allocated to the test set. Stratified sampling was applied to ensure that the class distribution remained consistent between the training and testing sets.
+
+2. Model Training and Hyperparameter Tuning (Random Forest)
+
+Hyperparameter tuning was performed on the Random Forest model using RandomizedSearchCV. This approach allowed for random sampling of key hyperparameters such as the number of estimators, maximum depth, minimum samples required for splitting, and other important factors. The scoring metric used for tuning was the F1 score (macro), optimizing for balanced performance across all classes. After identifying the best set of parameters, the tuned Random Forest model was trained and evaluated on the test set.
+
+3. Cross-Validation
+
+Cross-validation was performed using StratifiedKFold with 5 folds to ensure each fold contained a proportional representation of each class. This process was used to evaluate the models (Random Forest, KNN, and SVM) with 5-fold cross-validation, and the mean and standard deviation of the F1 score (macro) were reported. Once cross-validation was completed, each model was trained on the entire training dataset and evaluated on the test set.
+
+4. Model Evaluation Metrics
+
+Several performance metrics were calculated to assess the models' effectiveness: Accuracy, Precision, Recall, F1-Score, and AUC-ROC. Accuracy measures the proportion of correctly classified instances. Precision indicates the proportion of positive predictions that are correct, while Recall represents the proportion of actual positives correctly identified. The F1-Score, the harmonic mean of precision and recall, is particularly useful for imbalanced datasets. AUC-ROC evaluates the model's performance across various classification thresholds by measuring the area under the Receiver Operating Characteristic curve.
+
+5. Model Comparisons
+
+The performance of the models was compared using the metrics described above, with results printed for evaluation. Random Forest (Tuned) exhibited the best performance overall, achieving an accuracy of 0.6549, an F1-score of 0.6518, and an AUC-ROC of 0.8400. KNN and SVM did not perform as well, with both models showing lower F1 scores and AUC-ROC values, suggesting they were less effective for the classification task.
+
+![Confusion Matrices](combined_confusion_matrices.png)
+
+![ROC Curves](combined_roc_curves.png)
+6. Visualization of Results
+
+Confusion matrices were plotted for each model to visualize the distribution of true positives, false positives, true negatives, and false negatives. Additionally, Receiver Operating Characteristic (ROC) curves were plotted for each model to illustrate the trade-off between the true positive rate and false positive rate across various decision thresholds.
 
 ### Hyperparemeter Tuning
+7. Hyperparameter Tuning Results (Random Forest)
+
+The hyperparameter tuning of the Random Forest model resulted in a significantly improved model with optimized parameters. This tuned model outperformed the default Random Forest model, which also showed good performance but with slightly lower F1 and AUC-ROC scores compared to the tuned version.
+
+
+The Random Forest (Tuned) model delivered the best overall performance, excelling across all metrics, including F1-score and AUC-ROC. The hyperparameter tuning process notably enhanced its performance. In contrast, KNN and SVM performed less effectively, with SVM showing a marginally better AUC-ROC than KNN but still falling behind the Random Forest models in terms of other key performance metrics.
+
+Training and Evaluating Random Forest (Tuned)...
+Random Forest (Tuned) Cross-Validation F1 Score (5-fold): Mean = 0. 6757
+Random Forest (Tuned) Accuracy: 0.6793
+Random Forest (Tuned) Precision: 0.6728
+Random Forest (Tuned) Recall: 0.6792
+Random Forest (Tuned) F1-score: 0.6751
+Random Forest (Tuned) AUC-ROC: 0.8468
+
+Training and Evaluating KNN...
+KNN Cross-Validation F1 Score (5-fold): Mean = 0.5198
+KNN Accuracy: 0.5231
+KNN Precision: 0.5177
+KNN Recall: 0.5244
+KNN F1-score: 0.5155
+KNN AUC-ROC: 0.7126
+
+Training and Evaluating SVM...
+SVM Cross-Validation F1 Score (5-fold): Mean = 0.5331
+SVM Accuracy: 0.5242
+SVM Precision: 0.5328
+SVM Recall: 0.5245
+SVM F1-score: 0.5238
+SVM AUC-ROC: 0.7144
+
+Training and Evaluating Random Forest (Default)...
+Random Forest (Default) Cross-Validation F1 Score (5-fold): Mean = 0.6557
+Accuracy: 0.6673
+Precision: 0.6615
+Recall: 0.6685
+F1-score: 0.6642
+AUC-ROC: 0.8420
+
+
 
 ### Conclusion
