@@ -38,6 +38,16 @@ Categorical:
 To run this program enter the following command: 
 python main.py --data "dataset.csv"
 
+### Data Table (5 Rows)
+| Diabetes_012  | HighBP  | HighChol  | CholCheck  | BMI  | Smoker  | Stroke  | HeartDiseaseorAttack  | PhysActivity  | Fruits  | Veggies  | HvyAlcoholConsump  | AnyHealthcare  | NoDocbcCost  | GenHlth  | PhysHlth  | DiffWalk  | Sex  | Age  | Education  | Income  |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| 0  |  1 |  1 |  1 | 40  | 1  |  0 | 0  | 0  | 0  |  1 | 0  | 1  |  0 | 5  | 18  | 15  | 1  | 0  | 9  | 4  | 3  |
+| 0  |  0 |  0 | 0  |  25 |  1 | 0  |  0 | 0  |  1 |  0 | 0  |  0 |  3 |  0 |  0 |  0 | 0  | 0  | 7  | 6  | 1  |
+| 2  | 1  | 1  | 1  | 30  | 1  |  0 | 1  |  1 |  0 | 0  | 5  | 30  | 1  | 0  | 0  | 1  |  0 |  0 | 9  |  5 |  1 |
+| 1  | 1  | 1  | 1  |  32 |  1 | 1  | 0  | 1  | 0  | 0  | 1  |  0 | 5  |  0 | 30  |  1 | 0  |  0 | 8  |  5 |  7 |
+| 0  | 1  |  0 | 1  |  30 |  0 | 0  | 0  | 1  | 1  | 1  | 0  | 3  | 0  | 0  |  0 |  1 | 0  | 0  | 8  | 4  | 7  |
+
+
 ## Methodology
 ### Data Preprocessing
 
